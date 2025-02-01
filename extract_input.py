@@ -1,3 +1,4 @@
+# extract_input.py
 import os
 import json
 from rank_bm25 import BM25Okapi
@@ -12,13 +13,46 @@ os.makedirs(input_data_dir, exist_ok=True)
 with open("swe_bench_lite_dev.json", "r") as f:
     extracted_data = json.load(f)
 
-# Function to extract code snippets from a file
-def extract_code_snippets(file_path):
+# Function to extract code snippets with line numbers and indentation from a file
+def extract_code_snippets_with_context(file_path):
+    snippets = []
     with open(file_path, "r", encoding="utf-8") as f:
-        content = f.read()
-    # Use regex to extract functions or code blocks
-    code_snippets = re.findall(r"(def\s+\w+\(.*?\):.*?(?=\n\s*def|\Z))", content, re.DOTALL)
-    return code_snippets
+        lines = f.readlines()
+        in_code_block = False
+        current_snippet = []
+        start_line_number = -1
+
+        for line_number, line in enumerate(lines, 1):
+            stripped_line = line.strip()
+            if stripped_line.startswith("def ") or stripped_line.startswith("class "): #or stripped_line.startswith("if ") or stripped_line.startswith("for ") or stripped_line.startswith("while ") or stripped_line.startswith("with "): # Heuristics to detect code block starts
+                if current_snippet: # Save previous snippet if exists
+                    snippets.append({
+                        "start_line": start_line_number,
+                        "code": current_snippet
+                    })
+                    current_snippet = []
+                in_code_block = True
+                current_snippet.append(line.rstrip()) # Keep original indentation and line endings
+                start_line_number = line_number
+            elif in_code_block:
+                # Check if next line exists before accessing it
+                if stripped_line == "" and len(current_snippet) > 0 and line_number < len(lines) and lines[line_number].strip() == "": # Heuristic to detect end of a code block (two empty lines)
+                    snippets.append({
+                        "start_line": start_line_number,
+                        "code": current_snippet
+                    })
+                    current_snippet = []
+                    in_code_block = False
+                    start_line_number = -1
+                else:
+                    current_snippet.append(line.rstrip()) # Keep original indentation and line endings
+        if current_snippet: # For the last code block if file ends within a block
+            snippets.append({
+                "start_line": start_line_number,
+                "code": current_snippet
+            })
+    return snippets
+
 
 # Function to tokenize text
 def tokenize(text):
@@ -35,22 +69,23 @@ for entry in extracted_data:
         print(f"Codebase directory {codebase_path} does not exist. Skipping instance {instance_id}.")
         continue
 
-    # Collect all code snippets from the codebase with file paths
+    # Collect all code snippets from the codebase with file paths and line numbers
     all_snippets = []
     for root, _, files in os.walk(codebase_path):
         for file in files:
             if file.endswith(".py"):  # Process only Python files
                 file_path = os.path.join(root, file)
-                snippets = extract_code_snippets(file_path)
-                for snippet in snippets:
-                    all_snippets.append((file_path, snippet))
+                snippets_with_context = extract_code_snippets_with_context(file_path)
+                for snippet_data in snippets_with_context:
+                    all_snippets.append((file_path, snippet_data))
 
-    # Tokenize the problem statement and code snippets
+    # Tokenize the problem statement and code snippets (using only code content for BM25)
     tokenized_problem = tokenize(problem_statement)
-    tokenized_snippets = [tokenize(snippet) for _, snippet in all_snippets]
+    tokenized_snippets_for_bm25 = [tokenize("\n".join(snippet_data['code'])) for _, snippet_data in all_snippets]
+
 
     # Use BM25 to rank code snippets
-    bm25 = BM25Okapi(tokenized_snippets)
+    bm25 = BM25Okapi(tokenized_snippets_for_bm25)
     scores = bm25.get_scores(tokenized_problem)
 
     # Get the top 3 most relevant snippets
@@ -64,8 +99,11 @@ for entry in extracted_data:
     with open(os.path.join(input_data_path, "input.txt"), "w") as f:
         f.write(f"Problem Statement:\n{problem_statement}\n\n")
         f.write("Relevant Code Snippets:\n")
-        for i, (file_path, snippet) in enumerate(top_snippets, 1):
+        for i, (file_path, snippet_data) in enumerate(top_snippets, 1):
             f.write(f"File: {file_path}\n")
-            f.write(f"Snippet {i}:\n{snippet}\n\n")
+            f.write(f"Snippet {i}, Line Start: {snippet_data['start_line']}:\n")
+            for code_line in snippet_data['code']:
+                f.write(f"{code_line}\n")
+            f.write("\n")
 
     print(f"Extracted input saved for instance {instance_id} in {input_data_path}.")

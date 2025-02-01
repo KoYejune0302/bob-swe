@@ -1,0 +1,117 @@
+[
+  {
+    "instance_id": "pydicom__pydicom-1413",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-901",
+    "model_patch": "--- a/pydicom/util/codify.py\n+++ b/pydicom/util/codify.py\n@@ -64,7 +64,7 @@ def code_imports():\n     line2 = \"from pydicom.sequence import Sequence\"\n     return line_term.join((line0, line1, line2, line3))\n ```\n\n</pre>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1854",
+    "model_patch": "--- a/pvlib/pvsystem.py\n+++ b/pvlib/pvsystem.py\n@@ -250,7 +250,7 @@ def __init__(self,\n             ),)\n         elif len(arrays) == 0:\n             raise ValueError(\"PVSystem must have at least one Array. \"\n-                             \"If you want to create a PVSystem instance \"\n+                             \"If you want to create a PVSystem instance \"\n                              \"with a single Array pass `arrays=None` and pass \"\n                              \"values directly to PVSystem attributes, e.g., \"\n                              \"`surface_tilt=30`\")\ndiff --git a/pvlib/tests/test_modelchain.py b/pvlib/tests/test_modelchain.py\n--- a/pvlib/tests/test_modelchain.py\n+++ b/pvlib/tests/test_modelchain.py\n@@ -1929,7 +1929,7 @@ def test_ModelChain_creation_invalid_weather(self):\n     mc = ModelChain(system, location, orientation_strategy='None',\n                     clearsky_model='inefficient',\n                     transposition_model='haydavies',\n-                    solar_transmittance=0.8,\n+                    solar_transmittance=0.8,\n                     airmass_model='kastenyoung1989',\n                     total_irradiance_reflections=False,\n                     spectral_model='no_loss')\ndiff --git a/pvlib/tests/test_pvsystem.py b/pvlib/tests/test_pvsystem.py\n--- a/pvlib/tests/test_pvsystem.py\n+++ b/pvlib/tests/test_pvsystem.py\n@@ -2136,7 +2136,7 @@ def test_PVSystem_multi_array___repr__():\n     system = pvsystem.PVSystem(\n         arrays=[pvsystem.Array(pvsystem.FixedMount(surface_tilt=30,\n                                                   surface_azimuth=100)),\n-                pvsystem.Array(pvsystem.FixedMount(surface_tilt=20,\n+                pvsystem.Array(pvsystem.FixedMount(surface_tilt=20,\n                                                   surface_azimuth=220),\n                               name='foo')],\n         inverter='blarg',\n\n</diff>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1196",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "marshmallow-code__marshmallow-1343",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1978",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1072",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pyvista__pyvista-4315",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1625",
+    "model_patch": "--- a/test/rules/std_L020_test.py\n+++ b/test/rules/std_L020_test.py\n@@ -43,7 +43,7 @@ def test__rules__std_L020_complex():\n     \"\"\"Verify that L020 returns the correct error message for complex example.\"\"\"\n    sql = \"\"\"\n        SELECT\n-           a.pk,\n+           pk,\n            b.pk\n        FROM table_1 AS a\n        JOIN table_2 AS a ON a.pk = a.pk\n        JOIN table_3 AS b ON a.pk = b.pk\n@@ -59,7 +59,7 @@ def test__rules__std_L020_complex():\n     \"\"\"Verify that L020 returns the correct error message for complex example.\"\"\"\n    sql = \"\"\"\n        SELECT\n-           a.pk\n+          pk\n        FROM table_1 AS a\n        JOIN table_2 AS a ON a.pk = a.pk\n        JOIN table_3 AS b ON a.pk = b.pk\n@@ -94,7 +94,7 @@ def test__rules__std_L020_one_aliases_two_duplicate():\n     \"\"\"Verify that L020 returns the correct error message for one duplicate table aliases occur two times.\"\"\"\n    sql = \"\"\"\n        SELECT\n-           a.pk\n+          pk\n        FROM table_1 AS a\n        JOIN table_2 AS a ON a.pk = a.pk\n        JOIN table_3 AS a ON a.pk = a.pk\n\n</div>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "marshmallow-code__marshmallow-1359",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1733",
+    "model_patch": "--- a/test/rules/std_L019_test.py\n+++ b/test/rules/std_L019_test.py\n@@ -6,7 +6,7 @@ def test__rules__std_L019_unparseable():\n     \"\"\"Verify that L019 doesn't try to fix queries with parse errors.\n     This has been observed to frequently cause syntax errors, especially in\n     combination with Jinja templating, e.g. undefined template variables.\n-   \"\"\"\n+  \"\"\"\n \"\"\"\n     # This example comes almost directly from a real-world example. The user\n     # accidentally ran \"sqlfluff fix\" without defining\n@@ -15,7 +15,7 @@ class Rule_L018(BaseRule):\n         tab_space_size: int = 4\n     config_keywords = [\"tab_space_size\"]\n ```\n-\n+\n \"\"\"\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\ndiff --git a/src/sqlfluff/rules/L018.py b/src/sqlfluff/rules/L018.py\n--- a/src/sqlfluff/rules/L018.py\n+++ b/src/sqlfluff/rules/L018.py\n@@ -9,7 +9,7 @@ class Rule_L018(BaseRule):\n     config_keywords = [\"tab_space_size\"]\n ```\n-\n+\"\"\"\n \"\"\"\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\ndiff --git a/test/generate_parse_fixture_yml.py b/test/generate_parse_fixture_yml.py\n--- a/test/generate_parse_fixture_yml.py\n+++ b/test/generate_parse_fixture_yml.py\n@@ -10,7 +10,7 @@ def generate_parse_fixture(example):\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n-\n+\n \"\"\"\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n     Generated by `generate_parse_fixture_yml.py`.\n\n</ >",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1763",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1268",
+    "model_patch": "--- a/astroid/nodes/as_string.py\n+++ b/astroid/nodes/as_string.py\n@@ -47,7 +47,7 @@ class AsStringVisitor:\n         \"\"\"Visitor to render an Astroid node as a valid python code string\"\"\"\n     )\n \n-    def visit_unknown(self, node):\n+    def visit_unknown(self, _: Unknown) -> str:\n         \"\"\"Visit unknown nodes.\"\"\"\n         return \"\"\n \ndiff --git a/astroid/nodes/scoped_nodes.py b/astroid/nodes/scoped_nodes.py\n--- a/astroid/nodes/scoped_nodes.py\n+++ b/astroid/nodes/scoped_nodes.py\n@@ -644,7 +644,7 @@ def fully_defined(self):\n             return False\n         return self.file is not None and self.file.endswith(\".py\")\n \n-    @overload\n+    @overload\n     def check_module(self) -> bool:\n         \"\"\"Check if this module has been build from a.py file.\n         If so, the module contains a complete representation,\n@@ -652,7 +652,7 @@ def check_module(self) -> bool:\n         return self.file is not None and self.file.endswith(\".py\")\n \n-    @overload\n+    @overload\n     def check_package(self) -> bool:\n         \"\"\"Check if this package has been build from a folder containing a __init__.py file.\n         If so, the package contains a complete representation,\ndiff --git a/tests/unittest_builder.py b/tests/unittest_builder.py\n--- a/tests/unittest_builder.py\n+++ b/tests/unittest_builder.py\n@@ -281,7 +281,7 @@ def test_missing_newline(self) -> None:\n         resources.build_file(\"data/noendingnewline.py\")\n ```\n\n</ >",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-2419",
+    "model_patch": "--- a/src/sqlfluff/rules/L060.py\n+++ b/src/sqlfluff/rules/L060.py\n@@ -7,8 +7,8 @@ class Rule_L060(BaseRule):\n     * **Anti-pattern**\n     * ``IFNULL`` or ``NVL`` are used to fill ``NULL`` values.\n    .. code-block:: sql\n-       SELECT ifnull(foo, 0) AS bar,\n-       FROM baz;\n+       SELECT IFNULL(foo, 0) AS bar,\n+       FROM baz;\n         SELECT nvl(foo, 0) AS bar,\n         FROM baz;\n     | **Best practice**\n@@ -36,7 +36,7 @@ class Rule_L060(BaseRule):\n     * Use ``COALESCE`` instead.\n     * ``COALESCE`` is universally supported,\n     whereas Redshift doesn't support ``IFNULL``\n-    and BigQuery doesn't support ``NVL``.\n+    and BigQuery doesn't support ``NVL``.\n Additionally ``COALESCE`` is more flexible\n and accepts an arbitrary number of arguments.\n    .. code-block:: sql\n@@ -47,7 +47,7 @@ class Rule_L060(BaseRule):\n     * Use ``COALESCE`` instead.\n     * ``COALESCE`` is universally supported,\n     whereas Redshift doesn't support ``IFNULL``\n-    and BigQuery doesn't support ``NVL``.\n+    and BigQuery doesn't support ``NVL``.\n Additionally ``COALESCE`` is more flexible\n and accepts an arbitrary number of arguments.\n    .. code-block:: sql\ndiff --git a/src/sqlfluff/rules/std_l060.py b/src/sqlfluff/rules/std_l060.py\nnew file mode 100644\n--- /dev/null\n+++ b/src/sqlfluff/rules/std_l060.py\n@@ -0,0 +1,12 @@\n+\"\"\"\n+The std_l060 module contains the implementation for the L060 standard SQLFluff rule.\n+It currently only checks for NVL vs COALESCE usage.\n+\n+This rule was adapted from the great work done by https://github.com/awslabs/sql-lint\n+\"\"\"\n+import re\n+from typing import List\n+\n+from sqlfluff.core.parser.segments.raw import RawSegment\n+from sqlfluff.core.rules.base import BaseRule, LintResult, LintFix\n+from sqlfluff.core.rules.doc_decorators import document_fix_compatible\n+\n+\n+@document_fix_compatible\n+class Rule_STD_L060(BaseRule):\n+    \"\"\"Prefer COALESCE over IFNULL or NVL.\n+\n+    **Anti-pattern**\n+\n+    Using either ``IFNULL`` or ``NVL`` can cause problems when trying to maintain data consistency across different database engines.\n+    This is because they have subtly different behaviors depending on whether an argument is NULL or not.\n+    For example, ``IFNULL`` will always evaluate its first argument regardless of whether it is NULL or not, while ``COALESCE`` stops evaluating once it encounters a non-NULL value.\n+\n+   .. code-block:: sql\n+\n+      SELECT col, IFNULL(col, 0) AS col FROM tbl;\n+      -- becomes\n+      SELECT col, COALESCE(col, 0) AS col FROM tbl;\n+\n+    **Best practice**\n+\n+    Prefer using ``COALESCE`` as it has consistent behavior across databases.\n+    \"\"\"\n+\n+    def _eval(self, segment, parent_stack, **kwargs):\n+        \"\"\"Use COALESCE rather than IFNULL or NVL.\"\"\"\n+        # TODO: Add support for redshift/oracle\n+        # TODO: Make sure we don't get false positives where there are nested functions\n+        # e.g. SELECT SUM(IFNULL(val, 0)) FROM tbl\n+        if len(parent_stack) == 0:\n+            return None\n+        if segment.is_type(\"naked_identifier\") and parent_stack[-1].name == \"function_argument_list\":\n+            prev_func = self._find_prev(segment, \"function_name_identifier\")\n+            if prev_func and prev_func.raw_upper in (\"IFNULL\", \"NVL\"):\n+                fixes = []\n+                for seg in segment.iter_segments():\n+                    if seg.name == \"literal\":\n+                        fixes += [\n+                            LintFix(\n+                                \"edit\",\n+                                seg,\n+                                [RawSegment(value=\"COALESCE(\", name=\"function\")],\n+                            ),\n+                            LintFix(\n+                                \"delete\",\n+                                seg,\n+                            ),\n+                        ]\n+                return LintResult(anchor=segment, fixes=fixes)\n+        elif segment.is_type(\"naked_identifier\") and parent_stack[-1].name == \"column_definition\":\n+            prev_func = self._find_prev(segment, \"function_name_identifier\")\n+            if prev_func and prev_func.raw_upper in (\"IFNULL\", \"NVL\"):\n+                fixes = []\n+                for seg in segment.iter_segments():\n+                    if seg.name == \"literal\":\n+                        fixes += [\n+                            LintFix(\n+                                \"edit\",\n+                                seg,\n+                                [RawSegment(value=\"COALESCE(\", name=\"function\")],\n+                            ),\n+                            LintFix(\n+                                \"delete\",\n+                                seg,\n+                            ),\n+                        ]\n+                return LintResult(anchor=segment, fixes=fixes)\n+        else:\n+            return None\n+\n+    @staticmethod\n+    def _find_prev(segment, seg_type):\n+        \"\"\"Find previous segments of a certain type.\"\"\"\n+        history = list(segment.recursive_crawl_up())\n+        history.reverse()\n+        for i, elem in enumerate(history):\n+            if elem.is_type(seg_type):\n+                return elem\n+        return None\n\n</generated diff>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1707",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1154",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1139",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1333",
+    "model_patch": "--- a/tests/unittest_inference.py\n+++ b/tests/unittest_inference.py\n@@ -751,7 +751,7 @@ class TestInference(test_utils.LintTestUsingModule):\n         def do_thing_with_subscript(magic_flag):\n             src = [3, 2, 1]\n             if magic_flag:\n-                src = [1, 2, 3]\n+                src = [1, 2, 3]\n             something = src[0]\n             return something\n     \"\"\"\n@@ -770,7 +770,7 @@ def do_thing_with_subscript(magic_flag):\n         def do_thing_with_subscript(magic_flag):\n             src = [3, 2, 1]\n             index = zero_or_one(magic_flag)\n-            something = src[index]\n+            something = src[index]\n             return something\n     \"\"\"\n ```\n\n</details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1517",
+    "model_patch": "--- a/test/core/linter_test.py\n+++ b/test/core/linter_test.py\n@@ -642,7 +642,7 @@ def test__attempt_to_change_templater_warning(caplog):\n     )\n ```\n\n File: test/cli/commands_test.py, Start Line: 601\n-```python\n+```diff\n@@ -601,7 +601,7 @@ def test__cli__command_lint_serialize_github_annotation():\n def test__cli__command_lint_serialize_github_annotation():\n     \"\"\"Test format of github-annotation output.\"\"\"\n     fpath = \"test/fixtures/linter/identifier_capitalisation.sql\"\n-    result = invoke_assert_code(\n+    result = invoke_assert_code(ret_code=65,\n         args=[\n             lint,\n             (fpath, \"--format\", \"github-annotation\", \"--annotation-level\", \"warning\"),\n```",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1606",
+    "model_patch": "--- a/pvlib/modelchain.py\n+++ b/pvlib/modelchain.py\n@@ -1744,7 +1744,7 @@ def run_model(self, weather):\n             self.aoi_model()\n             self.spectral_model()\n             self.effective_irradiance_model()\n-            self._run_from_effective_irrad(weather)\n+            self._run_from_effective_irrad(weather, maxiter=100)\n         return self\n\n</details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1694",
+    "model_patch": "--- a/build_tools/sphinx/github_link.py\n+++ b/build_tools/sphinx/github_link.py\n@@ -20,6 +20,7 @@ def _linkcode_resolve(domain, info, package, url_fmt, revision):\n def _linkcode_resolve(domain, info, package, url_fmt, revision):\n     \"\"\"Determine a link to online source for a class/method/function\n     This is called by sphinx.ext.linkcode\n+\n     An example with a long-untouched module that everyone has\n     >>> _linkcode_resolve('py', {'module': 'tty',\n                              'fullname':'setraw'},\n@@ -118,6 +119,11 @@ def _linkcode_resolve(domain, info, package, url_fmt, revision):\n     return url_fmt.format(revision=revision, package=package,\n                          path=fn, lineno=lineno)\n ```\n+\n+\n+\n File: pydicom/tests/test_json.py, Start Line: 276\n ```python\n     def test_suppress_invalid_tags(self, _):\n+        \"\"\"Test tags that raise exceptions don't if suppress_invalid_tags True.\n+\n+        See https://github.com/pydicom/pydicom/issues/1694\n+        \"\"\"\n         \"\"\"Test tags that raise exceptions don't if suppress_invalid_tags True.\n         \"\"\"\n         ds = Dataset()\n@@ -282,3 +288,3 @@ def test_suppress_invalid_tags(self, _):\n         assert ds_json.get(\"00100010\") is None\n ```\n File: pydicom/dataset.py, Start Line: 853\n-```python\n+```python\n     def __getitem__(\n         self, key: Union[slice, TagType]\n     ) -> Union[\"Dataset\", DataElement]:\n@@ -850,7 +856,7 @@ def __getitem__(\n         elem = self._dict[tag]\n        if isinstance(elem, DataElement):\n            if elem.VR == VR_.SQ and elem.value:\n-               # let a sequence know its parent dataset, as sequence items\n-               # may need parent dataset tags to resolve ambiguous tags\n+               # Let a sequence know its parent dataset, as sequence items\n+               # may need parent dataset tags to resolve ambiguous tags\n             elem.value.parent = self\n            return elem\n         if isinstance(elem, RawDataElement):\n@@ -867,7 +873,7 @@ def __getitem__(\n         character_set = self.read_encoding or self._character_set\n        # Not converted from raw form read from file yet; do so now\n        self[tag] = DataElement_from_raw(elem, character_set, self)\n-       # If the Element has an ambiguous VR, try to correct it\n+       # If the Element has an ambiguous VR, try to correct it\n         if self[tag].VR in AMBIGUOUS_VR:\n             from pydicom.filewriter import correct_ambiguous_vr_element\n             self[tag] = correct_ambiguous_vr_element(\n\n</div>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1256",
+    "model_patch": "--- a/pydicom/env_info.py\n+++ b/pydicom/env_info.py\n@@ -14,7 +14,7 @@ def main():\n         platform.platform(), sys.version)]\n for module in (\"pydicom\", \"gdcm\", \"jpeg_ls\", \"numpy\", \"PIL\"):\n     try:\n-        m = importlib.import_module(module)\n+        m = __import__(module)\n     except ImportError:\n         version = \"_module not found_\"\n     else:\n@@ -221,7 +221,7 @@ def main():\n     print_table(version_rows)\n ```\n File: pydicom/dataset.py, Start Line: 2225\n-```python\n+```python\n class Dataset:\n     def from_json(\n         cls: Type[_Dataset],\n@@ -2235,7 +2235,7 @@ def from_json(cls: Type[_Dataset],\n             dataset = cls()\n            for tag, mapping in json_dataset.items():\n                vr = mapping['vr']\n-               unique_value_keys = tuple(\n+               unique_value_keys = frozenset(\n                     set(mapping.keys()) & set(jsonrep.JSON_VALUE_KEYS)\n                 )\n                 if len(unique_value_keys) == 0:\n@@ -2257,7 +2257,7 @@ def from_json(cls: Type[_Dataset],\n             dataset.add(data_element)\n         return dataset\n ```\n-File: pydicom/dataelem.py, Start Line: 284\n+File: pydicom/dataelem.py, Start Line: 284\n ```python\n     def to_json_dict(\n         self,\n@@ -289,7 +289,7 @@ def to_json_dict(\n         if self.VR in jsonrep.BINARY_VR_VALUES:\n             if not self.is_empty:\n                binary_value = self.value\n-               encoded_value = base64.b64encode(binary_value).decode('utf-8')\n+               encoded_value = base64.standard_b64encode(binary_value).decode('ascii')\n                 if (\n                     bulk_data_element_handler is not None\n                     and len(encoded_value) > bulk_data_threshold:\n@@ -303,7 +303,7 @@ def to_json_dict(\n         if not self.is_empty:\n             if self.VR == 'SQ':\n                # recursive call to get sequence item JSON dicts\n-               value = [\n+               value = list([\n                 ds.to_json(\n                     bulk_data_element_handler=bulk_data_element_handler,\n                     bulk_data_threshold=bulk_data_threshold,\n@@ -318,7 +318,7 @@ def to_json_dict(\n         if not self.is_empty:\n             if self.VR == 'SQ':\n                # recursive call to get sequence item JSON dicts\n-               value = [\n+               value = list([\n                 ds.to_json(\n                     bulk_data_element_handler=bulk_data_element_handler,\n                     bulk_data_threshold=bulk_data_threshold,\n\n</details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1866",
+    "model_patch": "--- a/tests/unittest_manager.py\n+++ b/tests/unittest_manager.py\n@@ -112,6 +112,7 @@ class TestManager(TestCase):\n         self.assertEqual(len(manager.files), 1)\n         self.assertIn('tests', manager.files)\n\n+        self.assertFalse(manager.configured_with_plugins())\n     def test_identify_old_namespace_package_protocol(self) -> None:\n         # Like the above cases, this package follows the old namespace package protocol\n         # astroid currently assumes such packages are in sys.modules, so import it\n\n</div> <!-- end diff -->",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  }
+]
