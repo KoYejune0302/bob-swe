@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from prompt import DEFAULT_PROMPT_TEMPLATE  # Import the prompt template
 
 # Configuration
-model_name_or_path = "deepseek-ai/deepseek-ai/DeepSeek-R1-Distill-Llama-8B"  # Use DeepSeek-R1
+model_name_or_path = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"  # Use DeepSeek-R1
 input_data_dir = "input_data"
 output_file = f"results/deepseek-r1/model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"  # Add timestamp
 
