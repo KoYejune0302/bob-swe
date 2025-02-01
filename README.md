@@ -109,6 +109,42 @@ This generates a JSON file (`model_patches_YYYYMMDD_HHMMSS.json`) containing the
 
 ---
 
+### 5. Run test
+
+```bash
+pip install sb-cli
+```
+
+Before using the CLI, you'll need to get an API key:
+
+1. Generate an API key:
+
+```bash
+sb-cli gen-api-key your.email@example.com
+```
+
+2. Set your API key as an environment variable - and store it somewhere safe!
+
+```bash
+export SWEBENCH_API_KEY=your_api_key
+# or add export SWEBENCH_API_KEY=your_api_key to your .*rc file
+```
+
+3. You'll receive an email with a verification code. Verify your API key:
+
+```bash
+sb-cli verify-api-key YOUR_VERIFICATION_CODE
+```
+
+4. Submit the predictions to the SWE-Bench-Lite leaderboard:
+
+```bash
+sb-cli submit swe-bench_lite dev --predictions_path {model_patch.json} --run_id {run_id}
+sb-cli submit swe-bench_lite test --predictions_path {model_patch.json} --run_id {run_id}
+```
+
+---
+
 ## Output
 
 - **`swe_bench_lite_dev.json`**: Extracted dataset.

@@ -3,23 +3,41 @@ import json
 import re
 import torch
 from datetime import datetime
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from prompt import DEFAULT_PROMPT_TEMPLATE  # Import the prompt template
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, BitsAndBytesConfig
+from prompt import DEFAULT_PROMPT_TEMPLATE
 
 # Configuration
-model_name_or_path = "princeton-nlp/SWE-Llama-7b"  # Use SWE-Llama-7b
+model_name_or_path = "princeton-nlp/SWE-Llama-7b"
 input_data_dir = "input_data"
-output_file = f"model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"  # Add timestamp
+output_file = f"model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+# Optimize CUDA memory allocation
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True,max_split_size_mb:128"
+
+# 4-bit quantization config
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+)
 
 # Load model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=False)  # Use slow tokenizer (SentencePiece)
+tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
 model = AutoModelForCausalLM.from_pretrained(
     model_name_or_path,
     device_map="auto",
-    torch_dtype=torch.float16,  # Use 16-bit precision for better performance
-    low_cpu_mem_usage=True  # Optimize CPU memory usage
+    quantization_config=quantization_config,
+    use_cache=False  # Disable caching to save memory
 )
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
+
+pipe = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    device_map="auto",
+    torch_dtype=torch.float16,
+)
 
 def extract_diff_from_response(response):
     """Extract the diff patch from the model's response."""
@@ -78,12 +96,12 @@ def process_instance(instance_id):
     # Generate response
     response = pipe(
         prompt,
-        max_new_tokens=2048,  # Increase token limit for better output
-        temperature=0.2,  # Lower temperature for more deterministic output
-        do_sample=True,
+        max_new_tokens=2048,  # Target token length
+        temperature=0.2,
         top_p=0.95,
         repetition_penalty=1.15,
-        batch_size=4  # Increase batch size to utilize more VRAM
+        do_sample=True,
+        batch_size=1  # Critical for memory usage
     )[0]['generated_text']
     
     # Extract diff
