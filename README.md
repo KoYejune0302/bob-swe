@@ -1,11 +1,11 @@
 # SWE-Bench-Lite Pipeline
 
-This project provides a pipeline to generate code diff patches for fixing issues in repositories from the SWE-Bench-Lite dataset using the SWE-Llama-7b model. The pipeline consists of four main scripts:
+This project provides a pipeline to generate code diff patches for fixing issues in repositories from the SWE-Bench-Lite dataset using the LLM model. The pipeline consists of four main scripts:
 
 1. **`load_dataset.py`**: Loads the SWE-Bench-Lite dataset and extracts relevant data.
 2. **`load_codebase.py`**: Clones the repositories at the specified base commit.
 3. **`extract_input.py`**: Extracts relevant code snippets for each issue.
-4. **`run_llm.py`**: Generates code diff patches using the SWE-Llama-7b model.
+4. **`run_llm_{model_name}.py`**: Generates code diff patches using the SWE-Llama-7b model.
 
 ---
 
@@ -99,10 +99,10 @@ This generates input files (`input_data/{instance_id}/input.txt`) containing the
 
 ### 4. Run LLM
 
-Run the `run_llm.py` script to generate code diff patches using the SWE-Llama-7b model:
+Run the `run_llm_{model_name}.py` script to generate code diff patches using the SWE-Llama-7b model:
 
 ```bash
-python run_llm.py
+python run_llm_{model_name}.py
 ```
 
 This generates a JSON file (`model_patches_YYYYMMDD_HHMMSS.json`) containing the patches.
@@ -131,7 +131,7 @@ pip install -r requirements.txt
 ## Customization
 
 - **Prompt Template**: Edit the `DEFAULT_PROMPT_TEMPLATE` in `prompt.py` to customize the prompt for the LLM.
-- **Model**: Replace `princeton-nlp/SWE-Llama-7b` in `run_llm.py` with another model if needed.
+- **Model**: Replace `princeton-nlp/SWE-Llama-7b` in `run_llm_swe_llama.py` with another model if needed.
 
 ---
 
