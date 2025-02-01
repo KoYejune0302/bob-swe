@@ -109,7 +109,7 @@ def process_instance(instance_id):
     # Generate response
     response = pipe(
         prompt,
-        max_new_tokens=2048,  # Target token length
+        max_new_tokens=4096,  # Increased max_new_tokens to 4096
         temperature=0.2,
         top_p=0.95,
         repetition_penalty=1.15,
@@ -120,6 +120,11 @@ def process_instance(instance_id):
 
     # Extract diff
     model_patch = extract_diff_from_response(response)
+
+    # Ensure model_patch is always a string, even if extraction fails
+    if not model_patch:
+        model_patch = "No patch generated" # Or you can use an empty diff: "No patch generated" # Or you can use an empty diff: ""
+
 
     # Remove the 'codebase/{instance_id}/' prefix
     model_patch = remove_codebase_prefix(model_patch, instance_id)
