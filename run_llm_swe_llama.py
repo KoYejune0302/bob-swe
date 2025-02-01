@@ -9,7 +9,7 @@ from prompt import DEFAULT_PROMPT_TEMPLATE
 # Configuration
 model_name_or_path = "princeton-nlp/SWE-Llama-7b"
 input_data_dir = "input_data"
-output_file = f"model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+output_file = f"results/swe-llama/model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
 # Optimize CUDA memory allocation
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True,max_split_size_mb:128"
@@ -101,7 +101,7 @@ def process_instance(instance_id):
         top_p=0.95,
         repetition_penalty=1.15,
         do_sample=True,
-        batch_size=1  # Critical for memory usage
+        batch_size=2  # Critical for memory usage
     )[0]['generated_text']
     
     # Extract diff

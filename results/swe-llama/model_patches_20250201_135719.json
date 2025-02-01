@@ -1,0 +1,117 @@
+[
+  {
+    "instance_id": "pydicom__pydicom-1413",
+    "model_patch": "--- a/pydicom/util/codify.py\n+++ b/pydicom/util/codify.py\n@@ -9,7 +9,7 @@ def camel_to_underscore(name: str) -> str:\n     s1 = first_cap_re.sub(r\"\\1_\\2\", name)\n     return all_cap_re.sub(r\"\\1_\\2\", s1).lower()\n\n-def tag_repr(tag: Tag) -> str:\n+def tag_repr(tag: TagLike) -> str:\n     \"\"\"String of tag value as (0xgggg, 0xeeee)\"\"\"\n     return f\"(0x{tag.group:04x}, 0x{tag.element:04x})\"\n\n def default_name_filter(name: str) -> str:\n@@ -16,6 +16,7 @@ def default_name_filter(name: str) -> str:\n     name = name.replace(\"control_point\", \"cp\")\n     name = name.replace(\"reference\", \"ref\")\n     name = name.replace(\"fraction_group\", \"frxn_gp\")\n+\n     return name\n\n # Functions to produce python code\nFile: pydicom/sequence.py\ndiff --git a/pydicom/sequence.py b/pydicom/sequence.py\n--- a/pydicom/sequence.py\n+++ b/pydicom/sequence.py\n@@ -1,5 +1,5 @@\n-import pydicom\n+import pydicom\n from pydicom.dataset import Dataset, FileMetaDataset\n from pydicom.sequence import Sequence\n\n@@ -10,6 +10,7 @@\n class Sequence(MultiValue[Dataset]):\n     \"\"\"Class to hold multiple :class:`~pydicom.dataset.Dataset` in a\n     :class:`list`.\n+\n     This class is derived from :class:`~pydicom.multival.MultiValue`\n     and as such enforces that all items added to the list are\n     :class:`~pydicom.dataset.Dataset` instances. In order to do this,\n@@ -16,7 +17,7 @@ def __init__(self, iterable: Optional[Iterable[Dataset]] = None) -> None:\n     self._parent: \"Optional[weakref.ReferenceType[Dataset]]\" = None\n\n     # validate_dataset is used as a pseudo type_constructor\n-    self._list: List[Dataset] = []\n+    self._list: List[\"Dataset\"] = []\n     # If no inputs are provided, we create an empty Sequence\n     super().__init__(validate_dataset, iterable or [])\n\n@@ -28,7 +29,7 @@ def __init__(self, iterable: Optional[Iterable[Dataset]] = None) -> None:\n     self.is_undefined_length: bool\n\n\n-generate a git diff patch that fixes the problem. Include the file names, line numbers, and precise code changes. Only output the diff patch.\n+Generate a git diff patch that fixes the problem. Include the file names, line numbers, and precise code changes. Only output the diff patch.\n\n</.gitignore>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-901",
+    "model_patch": "--- a/pydicom/config.py\n+++ b/pydicom/config.py\n@@ -10,7 +10,7 @@ def DS_decimal(use_Decimal_boolean=True):\n     import pydicom.valuerep\n     if use_DS_decimal:\n         pydicom.valuerep.DSclass = pydicom.valuerep.DSdecimal\n-    else:\n+    else:\n         pydicom.valuerep.DSclass = pydicom.valuerep.DSfloat\n\n # Configuration flags\n@@ -27,7 +27,7 @@ def DS_decimal(use_Decimal_boolean=True):\n allow_DS_float = False\n \"\"\"Set allow_float to True to allow DSdecimal instances\n to be created with floats; otherwise, they must be explicitly\n-converted to strings, with the user expically setting the\n-precision of digits and rounding. Default: False\"\"\"\n+\"converted to strings, with the user expically setting the precision of digits and rounding. Default: False\"\"\"\n\n enforce_valid_values = False\n \"\"\"Raise errors if any value is not allowed by DICOM standard,\n@@ -36,6 +36,7 @@ def DS_decimal(use_Decimal_boolean=True):\n     import pydicom.pixel_data_handlers.numpy_handler as np_handler  # noqa\n     import pydicom.pixel_data_handlers.rle_handler as rle_handler  # noqa\n     import pydicom.pixel_data_handlers.pillow_handler as pillow_handler  # noqa\n+    import pydicom.pixel_data_handlers.jpeg_ls_handler as jpegls_handler  # noqa\n     import pydicom.pixel_data_handlers.gdcm_handler as gdcm_handler  # noqa\n\n pixel_data_handlers = [\n@@ -44,7 +45,7 @@ def DS_decimal(use_Decimal_boolean=True):\n     import pydicom.pixel_data_handlers.numpy_handler as np_handler  # noqa\n     import pydicom.pixel_data_handlers.rle_handler as rle_handler  # noqa\n     import pydicom.pixel_data_handlers.pillow_handler as pillow_handler  # noqa\n-    import pydicom.pixel_data_handlers.jpeg_ls_handler as jpegls_handler  # noqa\n+    import pydicom.pixel_data_handlers.jpeg_ls_handler as jpegls_handler  # noqa\n     import pydicom.pixel_data_handlers.gdcm_handler as gdcm_handler  # noqa\n\n pixel_data_handlers = [\n\n</pre>\n\n <pre>\n File: pydicom/multival.py\ndiff --git a/pydicom/multival.py b/pydicom/multival.py\n--- a/pydicom/multival.py\n+++ b/pydicom/multival.py\n@@ -10,7 +10,7 @@ def __init__(self, type_constructor, iterable):\n     import pydicom.valuerep\n     if use_DS_decimal:\n         pydicom.valuerep.DSclass = pydicom.valuerep.DSdecimal\n-    else:\n+    else:\n         pydicom.valuerep.DSclass = pydicom.valuerep.DSfloat\n\n # Configuration flags\n\n</pre>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1854",
+    "model_patch": "--- a/pvlib/pvsystem.py\n+++ b/pvlib/pvsystem.py\n@@ -249,7 +249,7 @@ def __init__(self,\n     self._set_stack(arrays)\n\n     self.albedo = albedo\n-    self.surface_type = surface_type\n+    self.surface_type = surface_type or 'grass'\n     self.module = module\n     self.module_type = module_type\n     self.module_parameters = module_parameters\n@@ -259,7 +259,7 @@ def __init__(self,\n                              \"If you want to create a PVSystem instance \"\n                              \"with a single Array pass `arrays=None` and pass \"\n                              \"values directly to PVSystem attributes, e.g., \"\n-                             \"`surface_tilt=30`\")\n+                             \"`surface_tilt=30`\")\n\n class SingleAxisTracker(PVSystem):\n     def __init__(self, axis_tilt=0, axis_azimuth=0, **kwargs):\n\n</diff>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1196",
+    "model_patch": "--- a/astroid/nodes/node_classes.py\n+++ b/astroid/nodes/node_classes.py\n@@ -7,7 +7,7 @@ class Name(NodeNG, ParentInfoMixin):\n     \"\"\"\n     def __init__(self, parent=None, lineno=None, col_offset=None, end_lineno=None, end_col_offset=None):\n         super().__init__(parent, lineno, col_offset, end_lineno, end_col_offset)\n-        self._name = name\n+        self.name = name\n\n     def getitem(self, index, context=None):\n         \"\"\"Get an item from this node.\n@@ -16,7 +16,7 @@ def getitem(self, index, context=None):\n     def setitem(self, index, value, context=None):\n         \"\"\"Set an item to this node.\"\"\"\n         raise NotImplementedError()\n-\n+\n     def delitem(self, index, context=None):\n         \"\"\"Delete an item from this node.\"\"\"\n         raise NotImplementedError()\n\n</generated diff patch >",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "marshmallow-code__marshmallow-1343",
+    "model_patch": "--- a/src/marshmallow/schema.py\n+++ b/src/marshmallow/schema.py\n@@ -620,7 +620,7 @@ def validate(self, data, many=None, partial=None):\n         if many is None:\n             many = self.many\n         if partial is None:\n-            partial = self.partial\n+            partial = self.partial if hasattr(self, \"partial\") else True\n         if errors is None:\n             result, errors = self._do_load(data, many, partial=partial, postprocess=True)\n         self._invoke_field_validators(unmarshal, data=result, many=many)\n\n</pre>\n\n</details>\n\n <details>\n <summary> Fix #1344 </summary>\n\n\n Relevant Code Snippets (with file paths):\n File: codebase/marshmallow-code__marshmallow-1344/setup.py\n Code:\n def find_version(fname):\n     \"\"\"Attempts to find the version number in the file names fname.\n-    Raises RuntimeError if not found.\n+    Returns empty string if not found.\n+    Raises RuntimeError if not found.\n+    \"\"\"\n     version = ''\n     with open(fname, 'r') as fp:\n         reg = re.compile(r'__version__ = [\\'\"]([^\\'\"]*)[\\'\"]')\n\n\n File: codebase/marshmallow-code__marshmallow-1344/setup.py\n Code:\n def read(fname):\n     with open(fname) as fp:\n         content = fp.read()\n-    return content\n+    return content\n\n setup(\n     name='marshmallow',\n     version=find_version('src/marshmallow/__init__.py'),\n\n</details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1978",
+    "model_patch": "--- a/astroid/brain/brain_gi.py\n+++ b/astroid/brain/brain_gi.py\n@@ -457,7 +457,7 @@ def _import_gi_module(modname):\n     modnames = [modname]\n     optional_modnames = []\n\n-    # GLib and GObject may have some special case handling\n-    # in pygobject that we need to cope with. However at\n+    # GLib and GObject may have some special case handling\n+    # in pygobject that we need to cope with. However, at\n         \"gi.repository.GLib\":\n            optional_modnames.append(\"gi._glib\")\n         \"gi.repository.GObject\":\ndiff --git a/astroid/interpreter/_import/util.py b/astroid/interpreter/_import/util.py\n--- a/astroid/interpreter/_import/util.py\n+++ b/astroid/interpreter/_import/util.py\n@@ -1,6 +1,7 @@\n from astroid.modutils import (  # pylint: disable=import-outside-toplevel\n     EXT_LIB_DIRS,\n     STD_LIB_DIRS,\n+)\n\n STD_AND_EXT_LIB_DIRS = STD_LIB_DIRS.union(EXT_LIB_DIRS)\n\n File: tests/unittest_brain_numpy_core_numerictypes.py\n Code:\n def test_numpy_object_uninferable(self):\n@@ -1,6 +1,7 @@\n from astroid.modutils import (  # pylint: disable=import-outside-toplevel\n     EXT_LIB_DIRS,\n     STD_LIB_DIRS,\n+)\n\n STD_AND_EXT_LIB_DIRS = STD_LIB_DIRS.union(EXT_LIB_DIRS)\n\n\n</generated diff patch>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1072",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pyvista__pyvista-4315",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1625",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "marshmallow-code__marshmallow-1359",
+    "model_patch": "--- a/src/marshmallow/schema.py\n+++ b/src/marshmallow/schema.py\n@@ -910,7 +910,7 @@ def _init_fields(self):\n             self._bind_field(field_name, field_obj)\n\n     def _bind_field(self, field_name, field_obj):\n-        \"\"\"Update field with values from its parent schema. Called by\n+        \"\"\"Update field with values from its parent schema. Called by\n         :meth:`Schema._bind_field <marshmallow.Schema._bind_field>`.\n\n         self.parent = self.parent or schema\n\n\n</pre>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1733",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1763",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1268",
+    "model_patch": "--- a/astroid/builder.py\n+++ b/astroid/builder.py\n@@ -10,7 +10,7 @@\n class Builder(object):\n     \"\"\"A factory for creating nodes of the internal AST format.\n     \"\"\"\n-    _builtins = {}\n+    _internal_names = set()\n     _file_input = 1\n     _eval_input = 2\n     _single_input = 3\n\n\n</pre></td>\n\n <td width=\"33%\" valign=\"top\">\n\n\n</td></tr>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-2419",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1707",
+    "model_patch": "--- a/pvlib/iam.py\n+++ b/pvlib/iam.py\n@@ -10,7 +10,7 @@ def schlick(aoi):\n     iam = 1 - (1 - cosd(aoi)) ** 5\n     iam = np.where(np.abs(aoi) >= 90.0, 0.0, iam)\n\n-    # preserve input type\n+    # preserve input type and ensure scalar output\n     if np.isscalar(aoi):\n         iam = iam.item()\n     elif isinstance(aoi, pd.Series):\n\n</generated diff patch>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1154",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1139",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1333",
+    "model_patch": "--- a/astroid/modutils.py\n+++ b/astroid/modutils.py\n@@ -2,6 +2,7 @@\n     for directory, dirnames, filenames in os.walk(src_directory):\n         if directory in blacklist:\n             continue\n+        elif \"__init__.py\" in filenames:\n+            continue\n        _handle_blacklist(blacklist, dirnames, filenames)\n        # check for __init__.py\n        if not list_all and \"__init__.py\" not in filenames:\ndiff --git a/tests/unittest_nodes.py b/tests/unittest_nodes.py\n--- a/tests/unittest_nodes.py\n+++ b/tests/unittest_nodes.py\n@@ -1,6 +1,7 @@\n import unittest\n\n class TestNodes(TestCase):\n+\n def test_frozenset_as_string(self) -> None:\n        ast_nodes = builder.extract_node(\n            \"\"\"\n@@ -12,3 +13,3 @@ def test_frozenset_as_string(self) -> None:\n         self.assertNotEqual(ast_nodes[3].as_string(), \"frozenset(None)\")\n         self.assertNotEqual(ast_nodes[4].as_string(), \"frozenset(1)\")\n\n\n</pre>\n\n </details>\n\n</details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "sqlfluff__sqlfluff-1517",
+    "model_patch": "--- a/test/core/linter_test.py\n+++ b/test/core/linter_test.py\n@@ -11,7 +11,7 @@ def test__attempt_to_change_templater_warning(caplog):\n     print(lntr.lints())\n     print(lntr.stats())\n     print(lntr.parse_string(in_str='select * from tbl'))\n-    print(lntr.lint_string(sys.stdin.read()))\n+    print(lntr.lint_string(sys.stdin.read().strip('\\n')))\n\n </details>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pvlib__pvlib-python-1606",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1694",
+    "model_patch": "",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pydicom__pydicom-1256",
+    "model_patch": "--- a/pydicom/dataset.py\n+++ b/pydicom/dataset.py\n@@ -223,7 +223,7 @@ def from_json(\n             if not isinstance(json_dataset, dict):\n                json_dataset = json.loads(json_dataset)\n            dataset = cls()\n-           for tag, mapping in json_dataset.items():\n+            for key, mapping in json_dataset.items():\n                vr = mapping['vr']\n                unique_value_keys = tuple(\n                    set(mapping.keys()) & set(jsonrep.JSON_VALUE_KEYS)\n@@ -239,7 +239,7 @@ def from_json(\n             if not isinstance(json_dataset, dict):\n                json_dataset = json.loads(json_dataset)\n            dataset = cls()\n-           for tag, mapping in json_dataset.items():\n+            for key, mapping in json_dataset.items():\n                vr = mapping['vr']\n                unique_value_keys = tuple(\n                    set(mapping.keys()) & set(jsonrep.JSON_VALUE_KEYS)\n@@ -255,7 +255,7 @@ def from_json(\n             if not isinstance(json_dataset, dict):\n                json_dataset = json.loads(json_dataset)\n            dataset = cls()\n-           for tag, mapping in json_dataset.items():\n+            for key, mapping in json_dataset.items():\n                vr = mapping['vr']\n                unique_value_keys = tuple(\n                    set(mapping.keys()) & set(jsonrep.JSON_VALUE_KEYS)\ndiff --git a/pydicom/dataelem.py b/pydicom/dataelem.py\n--- a/pydicom/dataelem.py\n+++ b/pydicom/dataelem.py\n@@ -221,7 +221,7 @@ def from_json(\n             if not isinstance(json_dataset, dict):\n                json_dataset = json.loads(json_dataset)\n            dataset = cls()\n-           for tag, mapping in json_dataset.items():\n+            for key, mapping in json_dataset.items():\n                vr = mapping['vr']\n                unique_value_keys = tuple(\n                    set(mapping.keys()) & set(jsonrep.JSON_VALUE_KEYS)\n\n</pre>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  },
+  {
+    "instance_id": "pylint-dev__astroid-1866",
+    "model_patch": "--- a/astroid/modutils.py\n+++ b/astroid/modutils.py\n@@ -10,7 +10,7 @@ def _posix_path(path: str) -> str:\n     base_python = \"python%d.%d\" % sys.version_info[:2]\n     return os.path.join(prefix, path, base_python)\n\n-STD_LIB_DIRS.add(_posix_path(\"lib\"))\n+STD_LIB_DIRS |= frozenset([_posix_path(\"lib\")] + [_posix_path(f) for f in (\"site-packages\", \"extras.zip\")])\n if sys.maxsize > 2**32:\n     # This tries to fix a problem with /usr/lib64 builds,\n     # where systems are running both 32-bit and 64-bit code\ndiff --git a/tests/unittest_inference.py b/tests/unittest_inference.py\n--- a/tests/unittest_inference.py\n+++ b/tests/unittest_inference.py\n@@ -1,5 +1,5 @@\n import astroid\n\n def test_namespace_package() -> None:\n-    \"\"\"check that a file using namespace packages and relative imports is parseable\"\"\"\n+    \"\"\"Check that a file using namespace packages and relative imports is parseable.\"\"\"\n     resources.build_file(\"data/beyond_top_level/import_package.py\")\n\n def test_namespace_package_same_name() -> None:\n@@ -10,7 +10,7 @@ def test_namespace_package_same_name() -> None:\n     resources.build_file(\"data/beyond_top_level_two/a.py\")\n\n def test_relative_imports_init_package() -> None:\n-    \"\"\"check that relative imports within a package that uses __init__.py\n+\"\"\"Check that relative imports within a package that uses __init__.py.\"\"\"\n     resources.build_file(\n         \"data/beyond_top_level_three/module/sub_module/sub_sub_module/main.py\"\n\n\n</pre>",
+    "model_name_or_path": "princeton-nlp/SWE-Llama-7b"
+  }
+]

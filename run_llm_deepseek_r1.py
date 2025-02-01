@@ -9,7 +9,9 @@ from prompt import DEFAULT_PROMPT_TEMPLATE  # Import the prompt template
 # Configuration
 model_name_or_path = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"  # Use DeepSeek-R1
 input_data_dir = "input_data"
-output_file = f"results/deepseek-r1/model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"  # Add timestamp
+output_dir = "results/deepseek-r1"
+os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
+output_file = os.path.join(output_dir, f"model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")  # Add timestamp
 
 # Load model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
@@ -83,7 +85,7 @@ def process_instance(instance_id):
         do_sample=True,
         top_p=0.95,
         repetition_penalty=1.15,
-        batch_size=4  # Increase batch size to utilize more VRAM
+        batch_size=1  # Reduce batch size to save memory
     )[0]['generated_text']
     
     # Extract diff
@@ -98,18 +100,40 @@ def process_instance(instance_id):
         "model_name_or_path": model_name_or_path
     }
 
-# Process all instances
+# Process all instances incrementally
 results = []
-for instance_id in os.listdir(input_data_dir):
-    instance_dir = os.path.join(input_data_dir, instance_id)
-    if os.path.isdir(instance_dir):
+if os.path.exists(output_file):
+    # Load existing results if the file already exists
+    with open(output_file, "r") as f:
+        results = json.load(f)
+
+# Get list of instance IDs
+instance_ids = [instance_id for instance_id in os.listdir(input_data_dir) if os.path.isdir(os.path.join(input_data_dir, instance_id))]
+
+# Process each instance and save results incrementally
+for instance_id in instance_ids:
+    try:
+        # Skip if already processed
+        if any(result["instance_id"] == instance_id for result in results):
+            print(f"Skipping already processed instance: {instance_id}")
+            continue
+        
+        # Process the instance
         result = process_instance(instance_id)
         if result:
             results.append(result)
             print(f"Processed {instance_id}")
+        
+        # Save results after each iteration
+        with open(output_file, "w") as f:
+            json.dump(results, f, indent=2)
+            print(f"Results saved incrementally to {output_file}")
+    
+    except Exception as e:
+        print(f"Error processing instance {instance_id}: {e}")
+        # Save results even if an error occurs
+        with open(output_file, "w") as f:
+            json.dump(results, f, indent=2)
+            print(f"Partial results saved to {output_file}")
 
-# Save results
-with open(output_file, "w") as f:
-    json.dump(results, f, indent=2)
-
-print(f"Results saved to {output_file}")
+print(f"Final results saved to {output_file}")
