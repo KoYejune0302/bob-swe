@@ -172,3 +172,4 @@ cython_debug/
 
 # codebase
 codebase/
+input_data/
