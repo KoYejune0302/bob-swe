@@ -72,6 +72,10 @@ for entry in extracted_data:
     # Collect all code snippets from the codebase with file paths and line numbers
     all_snippets = []
     for root, _, files in os.walk(codebase_path):
+        # Skip directories named 'test' or 'tests'
+        if "test" in root.lower() or "tests" in root.lower():
+            continue
+
         for file in files:
             if file.endswith(".py"):  # Process only Python files
                 file_path = os.path.join(root, file)
