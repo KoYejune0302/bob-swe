@@ -2,7 +2,7 @@ from datasets import load_dataset
 import json
 
 # Load the SWE-bench-lite dataset from Hugging Face
-dataset = load_dataset("princeton-nlp/SWE-bench_Lite")
+dataset = load_dataset("princeton-nlp/SWE-bench_Verified")
 
 # Extract the 'test' dataset
 dev_dataset = dataset['test']
@@ -15,7 +15,7 @@ extracted_data = dev_dataset.select_columns(columns_to_extract)
 extracted_data_list = extracted_data.to_list()
 
 # Save the extracted data to a JSON file
-output_file = "swe_bench_lite_test.json"
+output_file = "swe_bench_verified_test.json"
 with open(output_file, 'w') as f:
     json.dump(extracted_data_list, f, indent=4)
 

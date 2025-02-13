@@ -9,7 +9,7 @@ input_data_dir = "input_data"
 os.makedirs(input_data_dir, exist_ok=True)
 
 # Load the extracted data from the JSON file
-with open("swe_bench_lite_test.json", "r") as f:
+with open("swe_bench_verified_test.json", "r") as f:
     extracted_data = json.load(f)
 
 # Function to extract code snippets with line numbers and indentation from a file

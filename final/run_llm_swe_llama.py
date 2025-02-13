@@ -10,7 +10,7 @@ from prompt import DEFAULT_PROMPT_TEMPLATE  # Import the updated prompt template
 # Configuration
 model_name_or_path = "princeton-nlp/SWE-Llama-7b"
 input_data_dir = "input_data"
-output_dir = "results/swe-llama"
+output_dir = "results/verified"
 os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
 output_file = os.path.join(output_dir, f"model_patches_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
 
@@ -123,7 +123,7 @@ def process_instance(instance_id):
 
     # Ensure model_patch is always a string, even if extraction fails
     if not model_patch:
-        model_patch = "No patch generated" # Or you can use an empty diff: "No patch generated" # Or you can use an empty diff: ""
+        model_patch = "--- No patch generated" # Or you can use an empty diff: "No patch generated" # Or you can use an empty diff: ""
 
 
     # Remove the 'codebase/{instance_id}/' prefix
@@ -132,7 +132,7 @@ def process_instance(instance_id):
     return {
         "instance_id": instance_id,
         "model_patch": model_patch,
-        "model_name_or_path": "YejuneKo/SWE-Llama-7b",
+        "model_name_or_path": "YejuneKo",
     }
 
 # Process all instances incrementally
