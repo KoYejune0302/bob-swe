@@ -61,6 +61,13 @@ for entry in extracted_data:
     instance_id = entry["instance_id"]
     problem_statement = entry["problem_statement"]
     codebase_path = os.path.join(codebase_dir, instance_id)
+    input_data_path = os.path.join(input_data_dir, instance_id)
+    output_file_path = os.path.join(input_data_path, "input.txt")
+
+    # Skip if the output file already exists
+    if os.path.exists(output_file_path):
+        print(f"Output file already exists for instance {instance_id}. Skipping.")
+        continue
 
     # Skip if the codebase directory does not exist
     if not os.path.exists(codebase_path):
@@ -87,8 +94,13 @@ for entry in extracted_data:
 
     # Check if any snippets were extracted to avoid division by zero error
     if not tokenized_snippets_for_bm25:
-        print(f"No code snippets found for instance {instance_id}. Skipping BM25 ranking.")
-        continue
+        print(f"No code snippets found for instance {instance_id}. Saving only problem statement.")
+        input_data_path = os.path.join(input_data_dir, instance_id)
+        os.makedirs(input_data_path, exist_ok=True)
+        with open(output_file_path, "w") as f:
+            f.write(f"Problem Statement:\n{problem_statement}\n")
+        print(f"Problem statement saved for instance {instance_id} in {input_data_path}.")
+        continue # Skip BM25 and snippet writing
 
     # Use BM25 to rank code snippets
     bm25 = BM25Okapi(tokenized_snippets_for_bm25)
@@ -102,14 +114,17 @@ for entry in extracted_data:
     # Save the extracted input
     input_data_path = os.path.join(input_data_dir, instance_id)
     os.makedirs(input_data_path, exist_ok=True)
-    with open(os.path.join(input_data_path, "input.txt"), "w") as f:
+    with open(output_file_path, "w") as f:
         f.write(f"Problem Statement:\n{problem_statement}\n\n")
-        f.write("Relevant Code Snippets:\n")
-        for i, (file_path, snippet_data) in enumerate(top_snippets, 1):
-            f.write(f"File: {file_path}\n")
-            f.write(f"Snippet {i}, Line Start: {snippet_data['start_line']}:\n")
-            for code_line in snippet_data['code']:
-                f.write(f"{code_line}\n")
-            f.write("\n")
+        if top_snippets:
+            f.write("Relevant Code Snippets:\n")
+            for i, (file_path, snippet_data) in enumerate(top_snippets, 1):
+                f.write(f"File: {file_path}\n")
+                f.write(f"Snippet {i}, Line Start: {snippet_data['start_line']}:\n")
+                for code_line in snippet_data['code']:
+                    f.write(f"{code_line}\n")
+                f.write("\n")
+        else:
+            print(f"No relevant code snippets found for instance {instance_id} after BM25. Only problem statement written.")
 
     print(f"Extracted input saved for instance {instance_id} in {input_data_path}.")
